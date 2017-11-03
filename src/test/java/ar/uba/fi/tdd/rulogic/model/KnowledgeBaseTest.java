@@ -3,6 +3,7 @@ package ar.uba.fi.tdd.rulogic.model;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Assert;
@@ -12,7 +13,8 @@ import org.mockito.InjectMocks;
 
 public class KnowledgeBaseTest {
 
-	private static final String DB = "padre(homero,bart).";
+	private static final String DB = "padre(homero,bart).\npadre(homero,lisa).";
+	private static final List<String> definitions = Arrays.asList("padre(homero,bart)","padre(homero,lisa)");
 
 	
 	@InjectMocks
@@ -34,13 +36,10 @@ public class KnowledgeBaseTest {
 		Assert.assertTrue(this.knowledgeBase.getDatabase().equals(DB));
 	} 
 	
-	
 	@Test
-	public void myFactsLooksGreatToo() {
-		List<String> facts = new ArrayList<String>();
-		facts.add("padre(homero,bart)");
-		Assert.assertTrue(this.knowledgeBase.getFacts().equals(facts));
+	public void mydefinitionsLooksGreatToo() {
+		knowledgeBase.setDefinitions(definitions);
+		Assert.assertTrue(this.knowledgeBase.getDefinitions().equals(definitions));
 	}
-	
 
 }
