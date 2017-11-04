@@ -15,6 +15,7 @@ public class KnowledgeBaseTest {
 
 	private static final String DB = "padre(homero,bart).\npadre(homero,lisa).";
 	private static final List<String> definitions = Arrays.asList("padre(homero,bart)","padre(homero,lisa)");
+	private static final String DB_SUCKS = "padre(homero,bart).\npadrehomero,lisa).";
 
 	
 	@InjectMocks
@@ -41,5 +42,30 @@ public class KnowledgeBaseTest {
 		knowledgeBase.setDefinitions(definitions);
 		Assert.assertTrue(this.knowledgeBase.getDefinitions().equals(definitions));
 	}
+	
+	//validar la integridad de la base de datos
+	@Test
+	public void myDataBaseSucks() {
+		KnowledgeBase kb = new KnowledgeBase();
+		kb.setDatabase(DB_SUCKS);
+		Assert.assertFalse(kb.validateDataBaseIntegrity());
+
+	}
+	
+		
+	//validar un fact unitario
+	@Test
+	public void validateFact() {
+		FactFactory factFactory = new FactFactory();
+		Fact fact = factFactory.createDefinition("varon(juan)");
+		
+//				new Fact("varon", Arrays.asList(["juan"]));
+//		fact.evaluate
+	}
+	
+	//validar una rule unitario
+	//validar la separacion de las facts
+	//validar la separacion de las rules
+	//
 
 }
