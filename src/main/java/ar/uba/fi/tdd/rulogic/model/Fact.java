@@ -27,5 +27,21 @@ public class Fact extends Definition{
 	public void setParams(List<String> params) {
 		this.params = params;
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		return (((Fact)obj).getName().equals(name) &&
+				((Fact)obj).getParams().equals(params));
+	}
+	
+	@Override
+	public int hashCode() {
+		return super.hashCode();
+	}
+
+	public String toDefinition() {
+		
+		return name + "(" + String.join(",", params) + ")";
+	}
 
 }
