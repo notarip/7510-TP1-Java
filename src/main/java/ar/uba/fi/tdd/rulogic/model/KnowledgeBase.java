@@ -10,9 +10,9 @@ public class KnowledgeBase {
 	private List<String> definitions;
 	private List<Fact> facts;
 	private List<Rule> rules;
-	
+
 	private Boolean status;
-	
+
 	public Boolean getStatus() {
 		return status;
 	}
@@ -24,9 +24,9 @@ public class KnowledgeBase {
 	public boolean answer(String query) {
 		return factQuery(query) || ruleQuery(query);
 	}
-	
+
 	private boolean ruleQuery(String query) {
-		
+
 		String cleanQuery = query.replaceAll("[\\.\\s]*", "");
 		List<Rule> match = null;
 		Fact fact = null;
@@ -35,17 +35,17 @@ public class KnowledgeBase {
 			String name = fact.getName();
 			match = getRules().stream().filter(elem -> elem.getName().equals(name)).collect(Collectors.toList());
 		} catch (FactFactoryException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
-		
-		if(match != null && !match.isEmpty()){
+
+		if (match != null && !match.isEmpty()) {
 			boolean result = true;
 			Rule rule = match.get(0);
 			List<Fact> factsToEvaluate = rule.buildFactsToEvaluate(fact.getParams());
 			for (Fact factToEval : factsToEvaluate) {
 				status = result && factQuery(factToEval.toDefinition());
 			}
-		}else{
+		} else {
 			return false;
 		}
 		return status;
@@ -53,14 +53,14 @@ public class KnowledgeBase {
 	}
 
 	private boolean factQuery(String query) {
-		
+
 		String cleanQuery = query.replaceAll("[\\.\\s]*", "");
 		List<Fact> match = null;
 		try {
 			Fact fact = FactFactory.createFact(cleanQuery);
 			match = getFacts().stream().filter(elem -> elem.equals(fact)).collect(Collectors.toList());
 		} catch (FactFactoryException e) {
-			e.printStackTrace();
+		//	e.printStackTrace();
 		}
 		return (match != null && !match.isEmpty());
 	}
@@ -72,39 +72,40 @@ public class KnowledgeBase {
 	}
 
 	private List<String> parseDefinitions(String database) {
-		String[] splited = database.split("\\s*\\.\n\\s*");
+		String[] splited = database.split("[\\.\n]+");
 		List<String> definitions = Arrays.asList(splited);
-		List<String> cleanDefinitions = definitions.stream().map(s -> s.replaceAll("[\\.\\s]*", "")).collect(Collectors.toList());
-		
+		List<String> cleanDefinitions = definitions.stream().map(s -> s.replaceAll("[\\.\\s]*", ""))
+				.collect(Collectors.toList());
+
 		setStatus(extractFacts(cleanDefinitions) && extractRules(cleanDefinitions));
-		
+
 		return cleanDefinitions;
 	}
 
 	private boolean extractRules(List<String> definitions) {
 		List<String> ruleList = definitions.stream().filter(elem -> elem.contains(":-")).collect(Collectors.toList());
-		Boolean status= Boolean.TRUE;
-		
+		Boolean status = Boolean.TRUE;
+
 		try {
 			setRules(RuleFactory.createRulesFrom(ruleList));
 		} catch (RuleFactoryException e) {
 			status = Boolean.FALSE;
 		}
-		
+
 		return status;
 	}
 
 	private Boolean extractFacts(List<String> definitions) {
 
 		List<String> factList = definitions.stream().filter(elem -> !elem.contains(":-")).collect(Collectors.toList());
-		Boolean status= Boolean.TRUE;
-		
+		Boolean status = Boolean.TRUE;
+
 		try {
 			setFacts(FactFactory.createFactsFrom(String.join(",", factList)));
 		} catch (FactFactoryException e) {
 			status = Boolean.FALSE;
 		}
-		
+
 		return status;
 	}
 
@@ -112,7 +113,7 @@ public class KnowledgeBase {
 		this.facts = facts;
 		return this;
 	}
-	
+
 	public String getDatabase() {
 		return database;
 	}
